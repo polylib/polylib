@@ -1,0 +1,17 @@
+{
+  "name": "polylib",
+  "description": "A simple library for creating fast, lightweight web components.",
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "main": "index.js",
+  "author": {
+    "name": "Dmitry Boikov",
+    "email": "boikovdv@gmail.com"
+  },
+  "contributors": [
+    { "name": "Azat Yamalov", "email": "yamalov.azat@gmail.com" },
+    { "name": "Andrey Maksimov", "email": "andrmaxmail@gmail.com" }
+  ],
+  "keywords": ["Web Components","Custom elements","lightweight"]
+}
