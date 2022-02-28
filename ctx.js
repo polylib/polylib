@@ -33,8 +33,10 @@ export function createContext(ctx, i, as) {
                 let x = path.pop();
                 let obj = getProp(i, path);
                 let old = obj[x];
-                obj[x] = val;
-                ctx.notifyChange({action: 'upd', path: ['items', index, ...rest].join('.'), value: val, oldValue: old});
+                if (old !== val) {
+                    obj[x] = val;
+                    ctx.notifyChange({action: 'upd', path: ['items', index, ...rest].join('.'), value: val, oldValue: old});
+                }
             } else {
                 ctx.pctx?.set(name, val);
             }
