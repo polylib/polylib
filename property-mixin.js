@@ -107,7 +107,7 @@ const PlPropertiesMixin = s => class plPropMixin extends s {
      * @param {DataMutation} m
      */
     notifyChange(m) {
-        let path = m.path.split('.');
+        let path = normalizePath(m.path);
         m.wmh = m.wmh || wmh++;
         if ( this.wmh[path[0]] >= m.wmh ) return;
         this.wmh[path[0]] = m.wmh;
