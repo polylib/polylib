@@ -431,7 +431,7 @@ export function getBackApl(b) {
         b.funcBB = (event) => {
             if (event.detail.wmh <= ctx.wmh[b.name] || event.detail.init) return;
             if (typeof node[b.name] === 'object' && event.detail.value === event.detail.oldValue || event.detail.path.split('.').length > 1) {
-                ctx.forwardNotify(event.detail, b.name, b.depend[0]);
+                ctx.forwardNotify?.(event.detail, b.name, b.depend[0]);
             } else {
                 ctx.set(b.depend[0], node[b.name], event.detail.wmh);
             }
