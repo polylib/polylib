@@ -132,7 +132,7 @@ class TemplateInstance extends DocumentFragment {
     }
 
     insert(ctx, before) {
-        let target = ctx?.root;
+        let target = before?.parentNode ?? ctx?.root;
         if (before) {
             target.insertBefore(this,before);
         } else {
@@ -324,8 +324,14 @@ class Template {
     }
     walkNode(node, path) {
         if (node.localName?.match(/\w+-/))
-            if (node.getAttribute('loading') === 'lazy')  this.usedCEL.add(node.localName); else this.usedCE.add(node.localName);
-        node.childNodes.forEach((i, index) => this.walkNode(i, [...path, index]));
+            if (node.getAttribute('loading') === 'lazy')
+                this.usedCEL.add(node.localName);
+            else
+                this.usedCE.add(node.localName);
+        for ( let i of node.childNodes ) {
+            this.walkNode(i, [...path, [...node.childNodes].indexOf(i)])
+        }
+
 
         if (nodeCheckBind(node)) {
             let bind = getAttrBinds(node, path);
@@ -381,13 +387,19 @@ function getPropApl(b) {
 
 function getTextApl(b) {
     return function text(node, ctx, m, content) {
+        // remove current stamped template instance if exist
+        if (node._ct) {
+            node._ct.detach();
+            node._ct = undefined;
+        }
         // if value is template stamp to text node parent
         if (content instanceof Template) {
-            let inst = content.stamp({...ctx, root: node.parentElement}, undefined, ctx._ti, content._hti);
+            let inst = content.stamp(ctx, node, ctx._ti, content._hti);
             ctx._ti.nti.push(inst);
+            node._ct = inst;
             content = '';
         }
-        node.textContent = b.textContent.replace(/\[\[(.*?)]]/gm, fixText(content))
+        node.textContent = fixText(content);
     };
 }
 
@@ -514,12 +526,30 @@ function getAttrBinds(node, path) {
 //
 function getTextBind(node, path) {
     if (node.textContent.match(pattern)) {
-        let negate = !!node.textContent.match(/\[\[!/);
-        //TODO: делить текстовые ноды если есть конкатенация
-        let depend = getDependence(node.textContent);
-        let bind = { path, type: 'text', depend, textContent: node.textContent, negate };
-        bind.apl = effectsFns[bind.type](bind);
-        return [bind];
+        // split text node and replace original node with parts
+        let parts = node.textContent.match(/(\[\[.+?]])|(.+?(?=\[\[))|.+/mg);
+        let binds = [];
+        let base = path.at(-1);
+        /** @type Node[] */
+        let nodes = parts.map( (p,index) => {
+            if (p[0] === '[') {
+                let negate = !!p.match(/\[\[!/);
+                let depend = getDependence(p);
+                let bind = { path: path.slice(0,-1).concat([base+index]), type: 'text', depend, textContent: p, negate };
+                bind.apl = getTextApl(bind);
+                binds.push(bind);
+                return document.createTextNode('');
+            } else {
+                return document.createTextNode(p);
+            }
+        })
+        nodes.forEach( n => {
+            node.parentNode.insertBefore(n, node);
+        });
+        node.__removed = true;
+        node.parentNode.removeChild(node);
+
+        return binds;
     }
 }
 
