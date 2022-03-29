@@ -179,6 +179,10 @@ class TemplateInstance extends DocumentFragment {
         
         if (dv.length > 1) {
             let [fn,...args] = dv;
+            if (!fn) {
+                console.error('Function not found in context: %s(%s)', bind.depend[0], bind.depend.slice(1).join(','));
+                return;
+            }
             //TODO: ctx for function
             return fn.apply(this._hti?.ctx ?? this.ctx, args);
         } else {
