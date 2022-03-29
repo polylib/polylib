@@ -409,6 +409,10 @@ function getTextApl(b) {
 
 function getEventApl(b) {
     return function event(node, ctx, m, val, self) {
+        if (!val) {
+            console.error('Function "%s" for event handler "%s" not found', b.depend[0], b.name);
+            return;
+        }
         let fn = val;
         !node._listeners && (node._listeners = {});
         if (node._listeners[b.name]) {
