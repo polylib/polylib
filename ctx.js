@@ -49,6 +49,16 @@ export function createContext(ctx, i, as) {
         },
         as,
         wmh: {},
-        hasProp: name => as === name
+        hasProp: name => as === name,
+        forwardNotify: (mutation, from, to) => {
+            let [pTo,...restTo] = normalizePath(to);
+            if (pTo === as) to = ['items',ctx.items.indexOf(i),...restTo].join('.');
+            let r = new RegExp(`^(${from})(\..)?`);
+            let path = mutation.path;
+            if (Array.isArray(path)) path = path.join('.');
+            path = path.replace(r, to+'$2');
+            mutation = {...mutation, path};
+            ctx.notifyChange(mutation);
+        }
     }
 }
