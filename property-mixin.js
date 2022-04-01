@@ -91,7 +91,7 @@ const PlPropertiesMixin = s => class plPropMixin extends s {
 
     /** @typedef {Object} DataMutation
      * @property {String} action
-     * @property {String} path - path to change relative to data host
+     * @property {String|Array} path - path to change relative to data host
      * @property {any} value - new value
      * @property {any} oldValue - value before mutation
      * @property {Number} [wmh] - watermark for change loop detection
@@ -112,7 +112,7 @@ const PlPropertiesMixin = s => class plPropMixin extends s {
         if ( this.wmh[path[0]] >= m.wmh ) return;
         this.wmh[path[0]] = m.wmh;
         if (m.value === m.oldValue && m.action === 'upd' && path.length === 1) return;
-        let [name] = m.path.split('.');
+        let name = path[0];
 
         let inst = this.constructor;
         if (inst.properties[name]?.observer) {
@@ -126,9 +126,11 @@ const PlPropertiesMixin = s => class plPropMixin extends s {
 
     }
     forwardNotify(mutation, from, to) {
-        let r = new RegExp(`^(${from})(\..)?`)
-        let translatedPath = mutation.path.replace(r, to+'$2');
-        mutation = {...mutation, path: translatedPath};
+        let r = new RegExp(`^(${from})(\..)?`);
+        let path = mutation.path;
+        if (Array.isArray(path)) path = path.join('.');
+        path = path.replace(r, to+'$2');
+        mutation = {...mutation, path};
         this.notifyChange(mutation);
     }
     hasProp(name) {
