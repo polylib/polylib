@@ -82,7 +82,7 @@ class TemplateInstance extends DocumentFragment {
         this.before = before;
         // memorize context for nested template
         forEachTemplateRecursive(this, t => {
-            t._hti = pti || this;
+            t._hti = this._hti ?? pti ?? this;
             t._pti = this;
         });
 
