@@ -420,17 +420,25 @@ function getEventApl(b) {
             node._listeners[b.name] = null;
         }
         let f = e => {
-            let ctxModel = ctx;
+            // build hierarchy chain
+            let composedPath = e.composedPath();
+            composedPath = composedPath.slice(0,composedPath.indexOf(ctx)).filter( i => i._ti );
+            composedPath.push(ctx);
             let model = {};
             let found = false;
-            // поднимаемся наверх по всем вложенным контекстам, собираем полную модель
-            while (ctxModel) {
-                if (ctxModel.model) {
-                    model[ctxModel.as] = ctxModel.model;
-                    found = true;
+            composedPath.forEach( ctxModel => {
+                // поднимаемся наверх по всем вложенным контекстам, собираем полную модель
+                while (ctxModel) {
+                    if (ctxModel.model) {
+                        if (ctxModel.as)
+                            model[ctxModel.as] = ctxModel.model;
+                        else
+                            Object.assign( model, ctxModel.model);
+                        found = true;
+                    }
+                    ctxModel = ctxModel._ti._pti?.ctx;
                 }
-                ctxModel = ctxModel._ti._pti?.ctx;
-            }
+            });
             if (found) e.model = model;
             fn.call(self || ctx, e);
         };
