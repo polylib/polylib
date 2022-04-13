@@ -55,7 +55,7 @@ const PlPropertiesMixin = s => class plPropMixin extends s {
         });
     }
     reflectToAttribute(name, val) {
-        if (this.constructor.properties[name].type === Boolean)
+        if (this._dp[name].type === Boolean)
             val = !!val;
         setAttrValue(/** @type HTMLElement */this,toKebab(name),val);
     }
