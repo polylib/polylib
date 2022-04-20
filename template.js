@@ -101,7 +101,7 @@ class TemplateInstance extends DocumentFragment {
         return this;
     }
     findByNPath(path) {
-        return path.reduce((n, i) => n.childNodes.length ? n.childNodes[i] : n._nodes[i], this);
+        return path.reduce((n, i) => n.childNodes.length ? n.childNodes[i] : n.ctx.root.childNodes[i], this);
     }
     attachBind(bind) {
         let node = this.findByNPath(bind.path);
