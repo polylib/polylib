@@ -368,7 +368,7 @@ function fixText(t) {
 
 
 function html(str) {
-    return new Template(str.raw);
+    return new Template(str.raw ?? str);
 }
 
 function getPropApl(b) {
