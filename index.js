@@ -1,4 +1,4 @@
-export { PlElement } from "./pl-element.js"
+export { PlElement, PlSVGElement } from "./pl-element.js"
 export { Template, html, svg } from "./engine/v1/template.js";
 export { css } from "./engine/v1/css.js"
 export { TemplateInstance } from "./engine/v1/instance.js"

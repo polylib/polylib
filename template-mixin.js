@@ -8,7 +8,7 @@ const PlTemplateMixin = s => class plTplMixin extends s {
      * @param {boolean} [config.delegatesFocus] - delegatesFocus flag for shadowRoot
      */
     constructor(config) {
-        super();
+        super(config);
         this.root = config?.lightDom ? config?.root ?? this : this.attachShadow({ mode: 'open', delegatesFocus: config?.delegatesFocus });
     }
     connectedCallback() {

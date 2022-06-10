@@ -30,6 +30,7 @@ export class PlElement extends PlTemplateMixin(PropertiesMixin(ContextMixin(HTML
 export class PlSVGElement extends PlTemplateMixin(PropertiesMixin(ContextMixin(EventTarget))) {
     //static template;
     _$ = {};
+    isSVGCustomElement = true;
     /**
      * @constructor
      * @param {object} [config]

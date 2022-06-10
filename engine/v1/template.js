@@ -81,6 +81,7 @@ export class Template {
                 tpl.usedCE.forEach(t => this.usedCE.add(t) );
                 tpl.usedCEL.forEach(t => this.usedCEL.add(t) );
                 let newNode = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                [...node.attributes].forEach( i => newNode.setAttribute(i.name, node.getAttribute(i.name)) );
                 newNode.setAttribute('is', node.localName);
                 node.parentNode.replaceChild(newNode, node);
                 newNode._tpl = tpl;

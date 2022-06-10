@@ -4,7 +4,7 @@ import {getNextWM} from "./ctx.js";
 export const PropertiesMixin = s => class PropMixin extends s {
     _props = {};
 
-    constructor() {
+    constructor(config) {
         super();
         let inst = this.constructor;
         let pi = [];
@@ -15,7 +15,7 @@ export const PropertiesMixin = s => class PropMixin extends s {
         this._dp = Object.assign({}, ...pi);
         Object.keys(this._dp).forEach( p => {
             // возможно значение уже назначено снаружи или задано в атрибуте, запоминаем и используем его вместо дефолтного
-            let attrVal = this.getAttribute?.(toDashed(p));
+            let attrVal = (config?.root ?? this).getAttribute?.(toDashed(p));
             // убираем атрибуты для свойств, если они не отображаются в атрибуты
             if (attrVal !== null && !this._dp[p].reflectToAttribute) this.removeAttribute?.(toDashed(p));
             let val = (this.hasOwnProperty(p) ? this[p] : undefined) ?? (this._dp[p].type === Boolean ? (attrVal !== null ? attrVal !== 'false' : undefined) : attrVal);

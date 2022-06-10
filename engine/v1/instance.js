@@ -9,7 +9,7 @@ export class TemplateInstance {
         this.clone = this.tpl.getClone();
         this.tpl.svgCE.forEach( path => {
             let node = findByNPath(this.clone, path);
-            let constr = customElements.get(node.localName);
+            let constr = customElements.get(node.getAttribute('is'));
             node.ctx = new constr({lightDom: true, root: node});
             this.tpl.afterStampHooks.push( { path , hook: node => node.ctx.connectedCallback() } )
         })

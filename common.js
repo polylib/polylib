@@ -5,10 +5,15 @@
  * @param {String|Number|Boolean} val
  */
 export function setAttrValue(node, attr, val) {
+    if ( node.isSVGCustomElement ) node = node.root;
     if (val !== undefined && val !== false)
         node.setAttribute(attr, val === true ? '' : val);
     else
         node.removeAttribute(attr);
+}
+export function getAttrValue(node, attr) {
+    if ( node instanceof PlSVGElement) node = node.root;
+    return node.getAttribute(attr);
 }
 
 /**
