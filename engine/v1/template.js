@@ -319,11 +319,11 @@ export function getBackApl(b) {
     return function back(node) {
         b.eventBB = b.backEvt || `${b.name}-changed`;
         b.funcBB = (event) => {
-            if (event.detail.wmh <= b.initiator[b.depend[0]].wmh[b.name] || event.detail.init) return;
+            if (event.detail.wmh <= b.initiator[b.depend[0]]?.wmh[b.name] || event.detail.init) return;
             if (typeof node[b.name] === 'object' && event.detail.value === event.detail.oldValue || normalizePath(event.detail.path).length > 1) {
                 b.initiator[b.depend[0]].forwardNotify?.(event.detail, b.name, b.depend[0]);
             } else {
-                b.initiator[b.depend[0]].set(b.depend[0], (node.ctx || node)[b.name], event.detail.wmh);
+                b.initiator[b.depend[0]]?.set(b.depend[0], (node.ctx || node)[b.name], event.detail.wmh);
             }
         };
         (node.ctx || node).addEventListener( b.eventBB, b.funcBB);
