@@ -319,6 +319,7 @@ export function getBackApl(b) {
     return function back(node) {
         b.eventBB = b.backEvt || `${b.name}-changed`;
         b.funcBB = (event) => {
+            // b.initiator[b.depend[0]] can be undefined when no property declared
             if (event.detail.wmh <= b.initiator[b.depend[0]]?.wmh[b.name] || event.detail.init) return;
             if (typeof node[b.name] === 'object' && event.detail.value === event.detail.oldValue || normalizePath(event.detail.path).length > 1) {
                 b.initiator[b.depend[0]].forwardNotify?.(event.detail, b.name, b.depend[0]);
