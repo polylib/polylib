@@ -94,6 +94,9 @@ class Repeater extends PropertiesMixin(ContextMixin(EventTarget)) {
         clone._ti.detach();
         //clone.dom.forEach(n => n.remove())
     }
+    detach() {
+        this.clones.forEach(c => this.detachClone(c));
+    }
 }
 
 class RepeatItem extends ContextMixin(EventTarget) {
@@ -135,4 +138,5 @@ function stampRepeater(node, ctx) {
     node.ctx.anchor = node;
     node.ctx.tpl = node._tpl;
     node.ctx.as = node._tpl.as;
+    ctx[0]._ti.nti.push(node.ctx);
 }
