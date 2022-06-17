@@ -114,11 +114,12 @@ class RepeatItem extends ContextMixin(EventTarget) {
 export default function repeatDirective(node, template) {
     let content = template.svg ? template.tpl.content.childNodes[0] : template.tpl.content;
     let nPath = getNPath(content, node);
-    let b = createBind('items', node.getAttribute(DIRECTIVE_SCHEME+':repeat'), nPath);
-    if (b) template.binds.push(b);
+    // add 'as' bind first to ensure it assigned before 'items'
     let as = node.getAttribute(DIRECTIVE_SCHEME+':as') ?? 'item';
-    b = createBind('as', as, nPath);
-    if (b) template.binds.push(b); else node.as = 'xxx' + node.getAttribute(DIRECTIVE_SCHEME+':as');
+    let b = createBind('as', as, nPath);
+    if (b) template.binds.push(b); else node.as = node.getAttribute(DIRECTIVE_SCHEME+':as');
+    b = createBind('items', node.getAttribute(DIRECTIVE_SCHEME+':repeat'), nPath);
+    if (b) template.binds.push(b);
     node.removeAttribute(DIRECTIVE_SCHEME+':repeat');
     node.removeAttribute(DIRECTIVE_SCHEME+':as');
     let id = getRandomId();
