@@ -1,7 +1,7 @@
 {
   "name": "polylib",
   "description": "A simple library for creating fast, lightweight web components.",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "license": "MIT",
   "type": "module",
   "main": "index.js",
