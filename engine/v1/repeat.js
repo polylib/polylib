@@ -70,7 +70,19 @@ class Repeater extends PropertiesMixin(ContextMixin(EventTarget)) {
                         clone.applyEffects({...mutation, path});
                     }
                 } else if (index === undefined) {
-                    if (old !== val) this.dirtyRefresh();
+                    if (old !== val) {
+                        let items = this.items.slice();
+                        let i = 0;
+                        while (items.length && i < this.clones.length) {
+                            this.clones[i].set(this.as, items.shift());
+                            i++;
+                        }
+                        if ( i < this.clones.length ) {
+                            let deleted = this.clones.splice(i, this.clones.length - i);
+                            deleted.forEach( c => this.detachClone(c));
+                        }
+                        if ( items.length ) this.clones.push(...this.renderItems(items, this.anchor));
+                    }
                 }
                 break;
         }
