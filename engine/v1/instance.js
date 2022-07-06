@@ -20,7 +20,7 @@ export class TemplateInstance {
     attach(target, before, context) {
         this.ctx = Array.isArray(context) ? context : [context];
         let tw = document.createTreeWalker(this.clone, NodeFilter.SHOW_COMMENT, { acceptNode: n => n._tpl ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT } );
-        while( tw.nextNode() ) tw.currentNode._tpl._hctx = this.ctx;
+        while( tw.nextNode() ) tw.currentNode._hctx = this.ctx;
 
         this.tpl.stampHooks.forEach( h => h.hook(findByNPath(this.clone, h.path), this.ctx));
         // build effect map
