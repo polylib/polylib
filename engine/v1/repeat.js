@@ -71,7 +71,7 @@ class Repeater extends PropertiesMixin(ContextMixin(EventTarget)) {
                     }
                 } else if (index === undefined) {
                     if (old !== val) {
-                        let items = this.items.slice();
+                        let items = this.items?.slice?.() || [];
                         let i = 0;
                         while (items.length && i < this.clones.length) {
                             this.clones[i].set(this.as, items.shift());
