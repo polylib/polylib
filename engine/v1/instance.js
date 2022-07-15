@@ -35,7 +35,10 @@ export class TemplateInstance {
     }
     insert(target, before) {
         target = before?.parentNode ?? target;
-        target.insertBefore(this.clone, before);
+        if (before)
+            target.insertBefore(this.clone, before);
+        else
+            target.appendChild(this.clone);
     }
     attachBind(bind) {
         let node = bind.node;

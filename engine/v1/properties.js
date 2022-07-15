@@ -33,8 +33,12 @@ export const PropertiesMixin = s => class PropMixin extends s {
             if (this._dp[p].reflectToAttribute) {
                 this.addEventListener(p+'-changed', () => this.reflectToAttribute(p, this._props[p]) );
             }
-            if (val) setTimeout( () => this.notifyChange({ action: 'upd', path: p, value: val, init: true, wmh: getNextWM() }), 0);
         });
+        setTimeout( () => {
+            Object.keys(this._props).forEach( p => {
+                if (this._props[p] !== this._dp[p]?.value)  this.notifyChange({ action: 'upd', path: p, value: this._props[p], init: true, wmh: getNextWM() })
+            })
+        })
     }
     connectedCallback() {
         super.connectedCallback?.();
