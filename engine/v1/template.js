@@ -242,9 +242,9 @@ function getPropApl(b) {
         if (node[b.name] === val) {
             if (typeof val === 'object' && mutation) {
                 if(b.depend.length === 1)
-                    node.forwardNotify(mutation, b.depend[0], b.name);
+                    node.forwardNotify?.(mutation, b.depend[0], b.name);
                 else
-                    node.notifyChange({ path: b.name, action: 'upd', wmh: mutation.wmh, value: val });
+                    node.notifyChange?.({ path: b.name, action: 'upd', wmh: mutation.wmh, value: val });
             }
         } else {
             if (node.set)
