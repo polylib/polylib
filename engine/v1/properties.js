@@ -12,7 +12,9 @@ export const PropertiesMixin = s => class PropMixin extends s {
             if (inst.hasOwnProperty('properties')) pi.unshift(inst.properties);
             inst = inst.__proto__;
         }
-        this._dp = Object.assign({}, ...pi);
+        this._dp = {};
+        //copy props from static properties with destruction to avoid future change default value in prototype
+        pi.forEach( i => Object.entries(i).forEach( ([k,v]) => this._dp[k] = {...v}));
         Object.keys(this._dp).forEach( p => {
             // возможно значение уже назначено снаружи или задано в атрибуте, запоминаем и используем его вместо дефолтного
             let attrVal = (config?.root ?? this).getAttribute?.(toDashed(p));
