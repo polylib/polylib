@@ -141,8 +141,6 @@ export default function repeatDirective(node, template) {
     let tpl = new Template(node);
     template.nestedTemplates.set(id, tpl);
     template.stampHooks.push({path: nPath, hook: stampRepeater});
-    tpl.usedCE.forEach(t => template.usedCE.add(t) );
-    tpl.usedCEL.forEach(t => template.usedCEL.add(t) );
     tpl.id = id;
     tpl.as = as;
     return ph;

@@ -109,7 +109,7 @@ export class TemplateInstance {
     }
 
     removeBind(path, prop) {
-        let targetNode = findByNPath(this, path);
+        let targetNode = findByNPath({childNodes: this._nodes}, path);
         if (!targetNode) return;
         let tib = this.binds;
         let binds = tib.filter( i => i.node === targetNode && i.name === prop );

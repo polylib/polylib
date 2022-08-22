@@ -16,8 +16,6 @@ export function svg(str) {
 
 export class Template {
     nestedTemplates = new Map();
-    usedCE = new Set();
-    usedCEL = new Set();
     svgCE = [];
     binds = [];
     stampHooks = [];
@@ -61,8 +59,6 @@ export class Template {
             let id = getRandomId();
             let ph = document.createComment('tpl:'+id);
             let tpl = new Template(node);
-            tpl.usedCE.forEach(t => this.usedCE.add(t) );
-            tpl.usedCEL.forEach(t => this.usedCEL.add(t) );
             this.nestedTemplates.set(id, tpl);
             tpl.id = id;
             node.parentNode?.replaceChild(ph, node);
@@ -70,16 +66,10 @@ export class Template {
         }
         //TODO: move to form component
         if (node.localName?.match(/\w+-/)) {
-            if (node.getAttribute('loading') === 'lazy')
-                this.usedCEL.add(node.localName);
-            else
-                this.usedCE.add(node.localName);
-            if (node.namespaceURI === 'http://www.w3.org/2000/svg') {
+             if (node.namespaceURI === 'http://www.w3.org/2000/svg') {
                 let svg = document.createElementNS("http://www.w3.org/2000/svg",'svg');
                 svg.replaceChildren(...node.childNodes);
                 let tpl = new Template(svg, { svg: true });
-                tpl.usedCE.forEach(t => this.usedCE.add(t) );
-                tpl.usedCEL.forEach(t => this.usedCEL.add(t) );
                 let newNode = document.createElementNS('http://www.w3.org/2000/svg', 'g');
                 [...node.attributes].forEach( i => newNode.setAttribute(i.name, node.getAttribute(i.name)) );
                 newNode.setAttribute('is', node.localName);
