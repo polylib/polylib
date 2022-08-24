@@ -1,4 +1,4 @@
-import {fixText, fromKebab, getRandomId, normalizePath, setAttrValue} from '../../common.js'
+import {fixText, fromDashed, getRandomId, normalizePath, setAttrValue} from '../../common.js'
 import {TemplateInstance} from "./instance.js";
 
 
@@ -187,15 +187,15 @@ export function createBind(attrName, attrValue, path) {
         };
         if (attrName.indexOf('on-') === 0) {
             sbnd.type = 'event'
-            sbnd.name = fromKebab(attrName.slice(3));
+            sbnd.name = fromDashed(attrName.slice(3));
             sbnd.apl = getEventApl(sbnd);
         } else if (attrName.lastIndexOf('$') > -1) {
             sbnd.type = 'attr';
-            sbnd.name = fromKebab(attrName.slice(0, -1));
+            sbnd.name = fromDashed(attrName.slice(0, -1));
             sbnd.apl = getAttrApl(sbnd);
         } else {
             sbnd.type = 'prop';
-            sbnd.name = fromKebab(attrName);
+            sbnd.name = fromDashed(attrName);
             sbnd.apl = getPropApl(sbnd);
         }
         return sbnd;

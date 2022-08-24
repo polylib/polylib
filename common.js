@@ -65,7 +65,7 @@ export function forEachTemplateRecursive(root, cb) {
         });
 }
 
-export function fromKebab (str) {
+export function fromDashed (str) {
     return str.replace(/-[a-z\u00E0-\u00F6\u00F8-\u00FE-]/g, function (match) {
         return match.slice(1).toUpperCase();
     });
