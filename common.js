@@ -66,7 +66,7 @@ export function forEachTemplateRecursive(root, cb) {
 }
 
 export function fromKebab (str) {
-    return str.replace(/-[a-z\u00E0-\u00F6\u00F8-\u00FE]/g, function (match) {
+    return str.replace(/-[a-z\u00E0-\u00F6\u00F8-\u00FE-]/g, function (match) {
         return match.slice(1).toUpperCase();
     });
 }
@@ -99,5 +99,5 @@ export function getRandomId() {
 }
 
 export function toDashed(string) {
-    return string.replace(/([a-z\d])([A-Z])/g, '$1-$2').toLowerCase();
+    return string.replace(/([a-z\d])([A-Z-])/g, '$1-$2').toLowerCase();
 }
