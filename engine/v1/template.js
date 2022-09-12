@@ -271,7 +271,7 @@ function getEventApl(b) {
                         found = true;
                     }
             });
-            if (found) e.model = model;
+            if (found) e.model = Object.assign( e.model ?? {}, model);
             fn.call(self || ctx[0], e);
         };
         node._listeners[b.name] = f;
