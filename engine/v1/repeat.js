@@ -29,6 +29,7 @@ class Repeater extends PropertiesMixin(ContextMixin(EventTarget)) {
 
         let itemContext = new RepeatItem(item, this.as, (ctx, m) => this.onItemChanged(ctx, m));
         itemContext._ti = inst
+        inst._nodes.forEach(i => i._item = itemContext);
         inst.attach(null, sibling || this.anchor, [itemContext, this, ...this.pti ]);
         return itemContext;
     }
