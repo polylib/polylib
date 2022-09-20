@@ -288,16 +288,16 @@ function getAttrApl(b) {
 function getTextApl() {
     return function text(node, ctx, m, content) {
         // remove current stamped template instance if exist
-        if (node._ct) {
-            node._ct.detach();
-            node._ct = undefined;
+        if (node._ti) {
+            node._ti.detach();
+            node._ti = undefined;
         }
         // if value is template stamp to text node parent
         if (content instanceof Template) {
             //TODO: move this to instance
             let instance = new TemplateInstance(content);
-            instance.attach(null, node, [...ctx, ...(content._hctx)??[]]);
-            node._ct = instance;
+            node._ti = instance;
+            instance.attach(null, node, [node, ...ctx, ...(content._hctx)??[]]);
             ctx[0]._ti.nti.push(instance);
             content = '';
         }

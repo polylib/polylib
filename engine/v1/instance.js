@@ -103,7 +103,7 @@ export class TemplateInstance {
      */
     addEffect(path, cb) {
         // find dataContext for property
-        let ctx = this.ctx.find( c => c.hasProp(path.split('.')[0]) );
+        let ctx = this.ctx.find( c => c.hasProp?.(path.split('.')[0]) );
         ctx?.addEffect(path, cb);
         return ctx;
     }
