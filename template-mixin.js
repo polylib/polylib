@@ -27,7 +27,7 @@ const PlTemplateMixin = s => class plTplMixin extends s {
                 else
                     this.root.getRootNode().adoptedStyleSheets = [...this.root.getRootNode().adoptedStyleSheets, this.constructor.css];
             } else {
-                this.root.append(this.constructor.css)
+                this.root.append(this.constructor.css.cloneNode(true))
             }
         }
     }
