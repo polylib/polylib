@@ -24,7 +24,7 @@ export const ContextMixin = s => class dataContext extends s {
         if (Array.isArray(target)) {
             if (!Array.isArray(value)) value = [value]
             let len = target.push(...value);
-            this.notifyChange({ action: 'splice', path, target, index: target.length - 1, addedCount: value.length, added: value });
+            this.notifyChange({ action: 'splice', path, target, index: target.length - value.length, addedCount: value.length, added: value });
             return len;
         }
     }
