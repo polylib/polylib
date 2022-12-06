@@ -8,6 +8,7 @@ export const ContextMixin = s => class dataContext extends s {
         let xl = xpath.length;
         let x = xpath.pop();
         let obj = getProp(this, xpath);
+        if(obj == null) return;
         let oldValue = obj[x];
         //TODO: move _props to props mixin
         if (obj._props?.[x]) obj._props[x] = value; else obj[x] = value;
