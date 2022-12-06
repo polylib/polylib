@@ -59,15 +59,15 @@ export const ContextMixin = s => class dataContext extends s {
         this.wmh[path[0]] = m.wmh;
         if (m.value === m.oldValue && m.action === 'upd' && path.length === 1) return;
         let name = path[0];
+        this.applyEffects(m);
+        // Polymer-like notify for upward binds
+        this.dispatchEvent(new CustomEvent(name + '-changed', { detail: m }));
         //TODO: move to prop mixin as effects
         let inst = this.constructor;
         if (inst.properties?.[name]?.observer) {
             this[inst.properties[name].observer](this._props[name], m.oldValue, m);
         }
-        this.applyEffects(m);
-
-        // Polymer-like notify for upward binds
-        this.dispatchEvent(new CustomEvent(name + '-changed', { detail: m }));
+        
 
     }
     forwardNotify(mutation, from, to) {
