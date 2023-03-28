@@ -54,8 +54,8 @@ export const ContextMixin = s => class dataContext extends s {
     notifyChange(m) {
         let path = normalizePath(m.path);
         m.wmh = m.wmh || getNextWM();
-        if ( this.wmh[m.path] >= m.wmh ) return;
-        this.wmh[m.path] = m.wmh;
+        if (this.wmh[path[0]] >= m.wmh ) return;
+        this.wmh[path[0]] = m.wmh;
         if (m.value === m.oldValue && m.action === 'upd' && path.length === 1) return;
         
         let name = path[0];
