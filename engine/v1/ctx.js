@@ -5,7 +5,6 @@ export const ContextMixin = s => class dataContext extends s {
     wmh = {};
     set(path, value, wmh) {
         let xpath = normalizePath(path);
-        let xl = xpath.length;
         let x = xpath.pop();
         let obj = getProp(this, xpath);
         if(obj == null) return;
@@ -55,20 +54,20 @@ export const ContextMixin = s => class dataContext extends s {
     notifyChange(m) {
         let path = normalizePath(m.path);
         m.wmh = m.wmh || getNextWM();
-        if ( this.wmh[path[0]] >= m.wmh ) return;
-        this.wmh[path[0]] = m.wmh;
+        if ( this.wmh[m.path] >= m.wmh ) return;
+        this.wmh[m.path] = m.wmh;
         if (m.value === m.oldValue && m.action === 'upd' && path.length === 1) return;
+        
         let name = path[0];
-        this.applyEffects(m);
-        // Polymer-like notify for upward binds
-        this.dispatchEvent(new CustomEvent(name + '-changed', { detail: m }));
-        //TODO: move to prop mixin as effects
+        // Порядок важен, чтобы вызывались сначала внутренние обсерверы компонента, а потом остальные
         let inst = this.constructor;
         if (inst.properties?.[name]?.observer) {
             this[inst.properties[name].observer](this._props[name], m.oldValue, m);
         }
-        
-
+        this.applyEffects(m);
+        // Polymer-like notify for upward binds
+        this.dispatchEvent(new CustomEvent(name + '-changed', { detail: m }));
+        //TODO: move to prop mixin as effects
     }
     forwardNotify(mutation, from, to) {
         let r = new RegExp(`^(${from})(\..)?`);
