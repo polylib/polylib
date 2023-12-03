@@ -60,9 +60,8 @@ export const ContextMixin = s => class dataContext extends s {
         this.applyEffects(m);
         let name = path[0];
         // Порядок важен, чтобы вызывались сначала внутренние обсерверы компонента, а потом остальные
-        let inst = this.constructor;
-        if (inst.properties?.[name]?.observer) {
-            this[inst.properties[name].observer](this._props[name], m.oldValue, m);
+        if (this._dp?.[name]?.observer) {
+            this[this._dp[name].observer](this._props[name], m.oldValue, m);
         }
         // Polymer-like notify for upward binds
         this.dispatchEvent(new CustomEvent(name + '-changed', { detail: m }));
