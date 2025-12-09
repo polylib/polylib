@@ -103,11 +103,13 @@ export class Template {
             let nodes = clone.childNodes[0].childNodes
             clone.replaceChildren(...nodes);
         }
-        let nodeIterator = document.createNodeIterator(clone, NodeFilter.SHOW_COMMENT);
-        let node;
-        while(node = nodeIterator.nextNode()){
-            let id = (node.textContent.split(":")[1] || "").trim();
-            node._tpl = this.nestedTemplates.get(id);
+        if (this.nestedTemplates.size > 0) {
+            let nodeIterator = document.createNodeIterator(clone, NodeFilter.SHOW_COMMENT);
+            let node;
+            while (node = nodeIterator.nextNode()) {
+                let id = (node.textContent.split(":")[1] || "").trim();
+                node._tpl = this.nestedTemplates.get(id);
+            }
         }
         return clone;
     }
