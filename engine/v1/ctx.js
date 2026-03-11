@@ -117,6 +117,20 @@ export const ContextMixin = s => class dataContext extends s {
             }
         });
     }
+
+    _hooks = new Map();
+    registerHook(hook, cb) {
+        if (!this._hooks.has(hook)) this._hooks.set(hook, new Set());
+        this._hooks.get(hook).add(cb);
+    }
+
+    runHooks(hook) {
+        this._hooks.get(hook)?.forEach(hook => hook());
+    }
+
+    disconnectedCallback() {
+        this.runHooks('disconnected');
+    }
 };
 
 export function getNextWM() {

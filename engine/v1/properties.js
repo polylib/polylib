@@ -1,6 +1,20 @@
 import { setAttrValue, toDashed } from '../../common.js';
 import { getNextWM } from './ctx.js';
 
+let timer = null;
+let pending = [];
+function addPendingInitialization(f) {
+    if (!timer) {
+        timer = setTimeout(() => {
+            timer = null;
+            const current = pending.slice();
+            pending = [];
+            current.forEach(f => f());
+        }, 0);
+    }
+    pending.push(f);
+}
+
 export const PropertiesMixin = s => class PropMixin extends s {
     _props = {};
 
@@ -35,9 +49,11 @@ export const PropertiesMixin = s => class PropMixin extends s {
                 this.addEventListener(p + '-changed', () => this.reflectToAttribute(p, this._props[p]));
             }
         });
-        setTimeout(() => {
+        addPendingInitialization(() => {
             Object.keys(this._props).forEach((p) => {
-                if (this._props[p] !== this._dp[p]?.value) this.notifyChange({ action: 'upd', path: p, value: this._props[p], init: true, wmh: getNextWM() });
+                if (this._props[p] !== this._dp[p]?.value) {
+                    this.notifyChange({action: 'upd', path: p, value: this._props[p], init: true, wmh: getNextWM()});
+                }
             });
         });
     }

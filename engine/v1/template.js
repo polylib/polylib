@@ -104,7 +104,7 @@ export class Template {
             clone.replaceChildren(...nodes);
         }
         if (this.nestedTemplates.size > 0) {
-            const nodeIterator = document.createNodeIterator(clone, NodeFilter.SHOW_COMMENT);
+            const nodeIterator = document.createTreeWalker(clone, NodeFilter.SHOW_COMMENT);
             let node;
             while ((node = nodeIterator.nextNode())) {
                 const id = (node.textContent.split(':')[1] || '').trim();

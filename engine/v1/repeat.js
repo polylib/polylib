@@ -59,7 +59,6 @@ class Repeater extends PropertiesMixin(ContextMixin(EventTarget)) {
                     const sibling = this.clones[mutation.index]?._ti._nodes[0];
                     const clones = this.renderItems(mutation.added, sibling, mutation.index);
                     this.clones.splice(mutation.index, 0, ...clones);
-                    this.anchor.dispatchEvent(new CustomEvent('dom-changed', { bubbles: true, composed: true }));
                     break;
                 }
             // noinspection FallThroughInSwitchStatementJS
@@ -87,7 +86,6 @@ class Repeater extends PropertiesMixin(ContextMixin(EventTarget)) {
                         }
                         if (items.length) this.clones.push(...this.renderItems(items, this.anchor));
                     }
-                    this.anchor.dispatchEvent(new CustomEvent('dom-changed', { bubbles: true, composed: true }));
                 }
                 break;
         }

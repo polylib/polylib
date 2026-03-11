@@ -65,6 +65,7 @@ const PlTemplateMixin = s => class plTplMixin extends s {
     }
 
     disconnectedCallback() {
+        super.disconnectedCallback();
         this._ti?.detach();
     }
 };

@@ -16,6 +16,9 @@ export class PlElement extends PlTemplateMixin(PropertiesMixin(ContextMixin(HTML
             get: (target, name) => {
                 if (!(name in target)) {
                     target[name] = this.root.querySelector('#' + name) ?? this._ti.querySelector('#' + name);
+                    target.registerHook?.('disconnected', () => {
+                        delete target[name];
+                    });
                 }
                 return target[name];
             }
