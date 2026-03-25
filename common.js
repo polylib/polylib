@@ -1,3 +1,5 @@
+import { PlSVGElement } from './pl-element.js';
+
 /**
  *
  * @param {HTMLElement} node
@@ -5,14 +7,15 @@
  * @param {String|Number|Boolean} val
  */
 export function setAttrValue(node, attr, val) {
-    if ( node.isSVGCustomElement ) node = node.root;
-    if (val !== undefined && val !== false)
+    if (node.isSVGCustomElement) node = node.root;
+    if (val !== undefined && val !== false) {
         node.setAttribute(attr, val === true ? '' : val);
-    else
+    } else {
         node.removeAttribute(attr);
+    }
 }
 export function getAttrValue(node, attr) {
-    if ( node instanceof PlSVGElement) node = node.root;
+    if (node instanceof PlSVGElement) node = node.root;
     return node.getAttribute(attr);
 }
 
@@ -40,7 +43,7 @@ export function stringPath(path) {
  */
 export function getProp(obj, path) {
     if (path.length > 0 && obj) {
-        path.forEach( p => obj = obj?.[p] );
+        path.forEach(p => obj = obj?.[p]);
     }
     return obj;
 }
@@ -52,20 +55,20 @@ export function getProp(obj, path) {
  * @return {boolean}
  */
 export function isSubPath(a, b) {
-    let ax = a + '.';
-    let bx = b + '.';
+    const ax = a + '.';
+    const bx = b + '.';
     return ax.startsWith(bx.slice(0, ax.length));
 }
 
 export function forEachTemplateRecursive(root, cb) {
     root.querySelectorAll('template')
-        .forEach( t => {
+        .forEach((t) => {
             cb(t);
-            forEachTemplateRecursive(t.content, cb)
+            forEachTemplateRecursive(t.content, cb);
         });
 }
 
-export function fromDashed (str) {
+export function fromDashed(str) {
     return str.replace(/-[a-z\u00E0-\u00F6\u00F8-\u00FE-]/g, function (match) {
         return match.slice(1).toUpperCase();
     });
@@ -83,7 +86,7 @@ export function fixText(t) {
  * @return {Number[]}
  */
 export function getNPath(root, node) {
-    let path = [];
+    const path = [];
     while (node && node !== root) {
         path.unshift([...node.parentNode.childNodes].indexOf(node));
         node = node.parentNode;
@@ -91,13 +94,36 @@ export function getNPath(root, node) {
     return path;
 }
 export function findByNPath(node, path) {
-    return path.reduce((n, i) => n.childNodes[i] , node);
+    return path.reduce((n, i) => n.childNodes[i], node);
 }
 
 export function getRandomId() {
-    return (Math.random() + 1).toString(36).substring(2)
+    return (Math.random() + 1).toString(36).substring(2);
 }
 
 export function toDashed(string) {
     return string.replace(/([a-z\d])([A-Z-])/g, '$1-$2').toLowerCase();
 }
+
+export function getBindValue(bind) {
+    const dv = bind.depend.map((p) => {
+        if (/['"]/.test(p)) {
+            return p.replace(/["']/g, '');
+        } else {
+            return bind.initiator[p]?.get(p);
+        }
+    });
+
+    if (dv.length > 1) {
+        const [fn, ...args] = dv;
+        if (!fn) {
+            console.error('Function not found in context: %s(%s)', bind.depend[0], bind.depend.slice(1).join(','));
+            return;
+        }
+        // TODO: ctx for function
+        return fn.apply(bind.initiator[bind.depend[0]], args);
+    } else {
+        return dv[0];
+    }
+}
+

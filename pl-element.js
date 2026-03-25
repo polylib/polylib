@@ -1,9 +1,9 @@
-import {PlTemplateMixin} from "./template-mixin.js";
-import {PropertiesMixin} from "./engine/v1/properties.js";
-import {ContextMixin} from "./engine/v1/ctx.js";
+import { PlTemplateMixin } from './template-mixin.js';
+import { PropertiesMixin } from './engine/v1/properties.js';
+import { ContextMixin } from './engine/v1/ctx.js';
 
 export class PlElement extends PlTemplateMixin(PropertiesMixin(ContextMixin(HTMLElement))) {
-    //static template;
+    // static template;
     _$ = {};
     /**
      * @constructor
@@ -13,22 +13,25 @@ export class PlElement extends PlTemplateMixin(PropertiesMixin(ContextMixin(HTML
     constructor(config) {
         super(config);
         this.$ = new Proxy(this._$, {
-            get: (target,name) => {
+            get: (target, name) => {
                 if (!(name in target)) {
-                    target[name] = this.root.querySelector('#'+name) ?? this._ti.querySelector('#'+name);
+                    target[name] = this.root.querySelector('#' + name) ?? this._ti.querySelector('#' + name);
+                    target.registerHook?.('disconnected', () => {
+                        delete target[name];
+                    });
                 }
                 return target[name];
             }
-        })
-    }
-    connectedCallback() {
-        super.connectedCallback()
+        });
     }
 
+    connectedCallback() {
+        super.connectedCallback();
+    }
 }
 
 export class PlSVGElement extends PlTemplateMixin(PropertiesMixin(ContextMixin(EventTarget))) {
-    //static template;
+    // static template;
     _$ = {};
     isSVGCustomElement = true;
     /**
@@ -39,12 +42,12 @@ export class PlSVGElement extends PlTemplateMixin(PropertiesMixin(ContextMixin(E
     constructor(config) {
         super(config);
         this.$ = new Proxy(this._$, {
-            get: (target,name) => {
+            get: (target, name) => {
                 if (!(name in target)) {
-                    target[name] = this.root.querySelector('#'+name) ?? this._ti.querySelector('#'+name);
+                    target[name] = this.root.querySelector('#' + name) ?? this._ti.querySelector('#' + name);
                 }
                 return target[name];
             }
-        })
+        });
     }
 }
