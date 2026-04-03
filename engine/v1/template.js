@@ -193,7 +193,7 @@ export function createBind(attrName, attrValue, path) {
             sbnd.apl = getEventApl(sbnd);
         } else if (attrName.lastIndexOf('$') > -1) {
             sbnd.type = 'attr';
-            sbnd.name = fromDashed(attrName.slice(0, -1));
+            sbnd.name = attrName.slice(0, -1);
             sbnd.apl = getAttrApl(sbnd);
         } else {
             sbnd.type = 'prop';
