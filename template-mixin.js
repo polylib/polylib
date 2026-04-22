@@ -76,7 +76,7 @@ export function attachObserversBind(bind, contexts) {
 
     bind.depend?.forEach((d) => {
         const ctx = contexts.find((c) => {
-            return c.hasProp?.(d);
+            return c.hasProp?.(d.split('.')[0]);
         });
         bind.initiator[d] = ctx;
         ctx.addEffect(d, bind.f);
