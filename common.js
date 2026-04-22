@@ -109,6 +109,12 @@ export function getBindValue(bind) {
     const dv = bind.depend.map((p) => {
         if (/['"]/.test(p)) {
             return p.replace(/["']/g, '');
+        } else if (p === 'true') {
+            return true;
+        } else if (p === 'false') {
+            return false;
+        } else if (/^-?(\d+\.\d+|\d+)$/.test(p)) {
+            return Number(p);
         } else {
             return bind.initiator[p]?.get(p);
         }
