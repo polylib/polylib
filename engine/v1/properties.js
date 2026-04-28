@@ -43,7 +43,7 @@ export const PropertiesMixin = s => class PropMixin extends s {
                     if (oldValue !== value) this.notifyChange({ action: 'upd', path: p, value, oldValue });
                 }
             });
-            if (typeof this._dp[p].value === 'function') this._dp[p].value = this._dp[p].value();
+            if (typeof this._dp[p].value === 'function' && this._dp[p].type !== Function) this._dp[p].value = this._dp[p].value();
             this._props[p] = val ?? this._dp[p].value;
             if (this._dp[p].reflectToAttribute) {
                 this.addEventListener(p + '-changed', () => this.reflectToAttribute(p, this._props[p]));
