@@ -25,6 +25,12 @@ export class PlElement extends PlTemplateMixin(PropertiesMixin(ContextMixin(HTML
         });
     }
 
+    clear$() {
+        Object.keys(this._$).forEach((key) => {
+            delete this._$[key];
+        });
+    }
+
     connectedCallback() {
         super.connectedCallback();
     }

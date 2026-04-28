@@ -42,6 +42,7 @@ const PlTemplateMixin = s => class plTplMixin extends s {
         if (tpl) {
             const inst = new TemplateInstance(tpl);
             this._ti = inst;
+            this.clear$();
             inst.attach(this.root, undefined, this);
         }
 
