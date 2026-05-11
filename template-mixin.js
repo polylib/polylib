@@ -3,6 +3,7 @@ import { getBindValue } from './common.js';
 
 const PlTemplateMixin = s => class plTplMixin extends s {
     _observersBinds = [];
+    _$ = {};
     /**
      * @constructor
      * @param {object} [config]
@@ -12,6 +13,19 @@ const PlTemplateMixin = s => class plTplMixin extends s {
      */
     constructor(config) {
         super(config);
+
+        this.$ = new Proxy(this._$, {
+            get: (target, name) => {
+                if (!(name in target)) {
+                    target[name] = this.root.querySelector('#' + name) ?? this._ti.querySelector('#' + name);
+                    target.registerHook?.('disconnected', () => {
+                        delete target[name];
+                    });
+                }
+                return target[name];
+            }
+        });
+
         // setup observers
         if (this.constructor.observers?.length > 0) {
             this.createObserversBinds();
@@ -19,6 +33,12 @@ const PlTemplateMixin = s => class plTplMixin extends s {
         this.root = config?.lightDom
             ? config?.root ?? this
             : this.attachShadow({ mode: 'open', delegatesFocus: config?.delegatesFocus });
+    }
+
+    clear$() {
+        Object.keys(this._$).forEach((key) => {
+            delete this._$[key];
+        });
     }
 
     createObserversBinds() {
