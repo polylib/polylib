@@ -9,7 +9,13 @@ function addPendingInitialization(f) {
             timer = null;
             const current = pending.slice();
             pending = [];
-            current.forEach(f => f());
+            current.forEach((initFunction) => {
+                try {
+                    initFunction();
+                } catch (error) {
+                    console.error(error);
+                }
+            });
         }, 0);
     }
     pending.push(f);
@@ -50,9 +56,12 @@ export const PropertiesMixin = s => class PropMixin extends s {
             }
         });
         addPendingInitialization(() => {
+            // Если ко времени вызова инициализатора компонент уже будет удален, то и инициализация не нужна
+            if (this._ti?.__detached) return;
+
             Object.keys(this._props).forEach((p) => {
                 if (this._props[p] !== this._dp[p]?.value) {
-                    this.notifyChange({action: 'upd', path: p, value: this._props[p], init: true, wmh: getNextWM()});
+                    this.notifyChange({ action: 'upd', path: p, value: this._props[p], init: true, wmh: getNextWM() });
                 }
             });
         });

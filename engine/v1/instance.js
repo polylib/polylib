@@ -72,6 +72,8 @@ export class TemplateInstance {
     }
 
     detach() {
+        this.__detached = true;
+
         this.nti.forEach(t => t.detach());
         // TODO: detach property effects, events etc...
         this.binds.forEach((b) => {
