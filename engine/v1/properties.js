@@ -40,7 +40,12 @@ export const PropertiesMixin = s => class PropMixin extends s {
             const attrVal = (config?.root ?? this).getAttribute?.(toDashed(p));
             // убираем атрибуты для свойств, если они не отображаются в атрибуты
             if (attrVal !== null && !this._dp[p].reflectToAttribute) this.removeAttribute?.(toDashed(p));
-            const val = (Object.prototype.hasOwnProperty.call(this, p) ? this[p] : undefined) ?? (this._dp[p].type === Boolean ? (attrVal !== null ? attrVal !== 'false' : undefined) : attrVal);
+            let val = Object.prototype.hasOwnProperty.call(this, p) ? this[p] : undefined;
+            if (val === undefined && attrVal !== null) {
+                val = this._dp[p].type === Boolean
+                    ? attrVal !== 'false'
+                    : attrVal;
+            }
             Object.defineProperty(this, p, {
                 get: () => this._props[p],
                 set: (value) => {
@@ -50,7 +55,7 @@ export const PropertiesMixin = s => class PropMixin extends s {
                 }
             });
             if (typeof this._dp[p].value === 'function' && this._dp[p].type !== Function) this._dp[p].value = this._dp[p].value();
-            this._props[p] = val ?? this._dp[p].value;
+            this._props[p] = val !== undefined ? val : this._dp[p].value;
             if (this._dp[p].reflectToAttribute) {
                 this.addEventListener(p + '-changed', () => this.reflectToAttribute(p, this._props[p]));
             }
