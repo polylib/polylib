@@ -1,6 +1,5 @@
 import { TemplateInstance } from './index.js';
 import { getBindValue } from './common.js';
-
 const PlTemplateMixin = s => class plTplMixin extends s {
     _observersBinds = [];
     _$ = {};
@@ -23,13 +22,11 @@ const PlTemplateMixin = s => class plTplMixin extends s {
 
         this.$ = new Proxy(this._$, {
             get: (target, name) => {
-                if (!(name in target)) {
-                    const element = this.root.querySelector('#' + name) ?? this._ti.querySelector('#' + name);
+                if (!target[name]) {
+                    const element = this.root.querySelector('#' + name) ?? this._ti?.querySelector('#' + name);
+                    target[name] = element;
                     if (element) {
-                        target[name] = element;
-                        target.registerHook?.('disconnected', () => {
-                            delete target[name];
-                        });
+                        this.notifyChange({ action: 'upd', path: ['$', name], value: element });
                     }
                 }
                 return target[name];

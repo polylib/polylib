@@ -19,6 +19,13 @@ export class Template {
     binds = [];
     stampHooks = [];
     afterStampHooks = [];
+
+    /**
+     * id → npath в этом шаблоне. Заполняется при парсе экземпляра Template
+     * @type {Map<string, number[]>}
+     */
+    idPaths = new Map();
+
     constructor(tpl, opt) {
         this.svg = opt?.svg === true;
         /** @type HTMLTemplateElement */
@@ -53,6 +60,9 @@ export class Template {
                 const d = Directives[a.name.split(':')[1]];
                 d?.(node, this);
             });
+        }
+        if (node instanceof Element && node.id) {
+            this.idPaths.set(node.id, path);
         }
         if (node.nodeName === 'TEMPLATE') {
             const id = getRandomId();

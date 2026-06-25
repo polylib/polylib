@@ -35,6 +35,36 @@ export class TemplateInstance {
         return this;
     }
 
+    _publishRef(host, id, element) {
+        if (!host?._$ || !(id in host._$) || host._$[id] === element) return;
+        host._$[id] = element;
+        host.notifyChange({ action: 'upd', path: ['$', id], value: element });
+    }
+
+    _notifyStampedRefs() {
+        for (const host of this.ctx ?? []) {
+            if (!host?._$) continue;
+            for (const id of Object.keys(host._$)) {
+                if (host._$[id]) continue;
+                const path = this.tpl.idPaths.get(id);
+                if (!path) continue;
+                const node = findByNPath({ childNodes: this._nodes }, path);
+                if (node?.id === id) this._publishRef(host, id, node);
+            }
+        }
+    }
+
+    _notifyDetachedRefs() {
+        for (const host of this.ctx ?? []) {
+            if (!host?._$) continue;
+            for (const id of Object.keys(host._$)) {
+                if (!host._$[id]) continue;
+                host._$[id] = null;
+                host.notifyChange({ action: 'upd', path: ['$', id], value: null });
+            }
+        }
+    }
+
     insert(target, before) {
         target = before?.parentNode ?? target;
         if (before) {
@@ -42,6 +72,7 @@ export class TemplateInstance {
         } else {
             target.appendChild(this.clone);
         }
+        this._notifyStampedRefs();
     }
 
     attachBind(bind) {
@@ -85,6 +116,7 @@ export class TemplateInstance {
             }
         });
         this._nodes.forEach(n => n.remove());
+        this._notifyDetachedRefs();
     }
 
     /**
