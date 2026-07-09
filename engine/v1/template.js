@@ -201,6 +201,10 @@ export function createBind(attrName, attrValue, path) {
             sbnd.type = 'event';
             sbnd.name = fromDashed(attrName.slice(3));
             sbnd.apl = getEventApl(sbnd);
+        } else if (attrName.lastIndexOf('fn') > -1) {
+            sbnd.type = 'function';
+            sbnd.name = fromDashed(attrName.slice(0, -3));
+            sbnd.apl = getFnApl(sbnd);
         } else if (attrName.lastIndexOf('$') > -1) {
             sbnd.type = 'attr';
             sbnd.name = attrName.slice(0, -1);
@@ -256,6 +260,12 @@ function getPropApl(b) {
                 node[b.name] = val;
             }
         }
+    };
+}
+
+function getFnApl(b) {
+    return function fn(node, ctx, mutation, val) {
+        node[b.name] = val.bind(ctx[0])
     };
 }
 
